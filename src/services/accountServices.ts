@@ -16,3 +16,16 @@ export const fundAccount = async (user_id: number, amount: number) => {
   await updateAccountBalance(user_id, newBalance);
 };
 
+export const transferFunds = async (from_user_id: number, to_user_id: number, amount: number) => {
+  const fromAccount = await getAccountByUserId(from_user_id);
+  const toAccount = await getAccountByUserId(to_user_id);
+
+  if (fromAccount.balance < amount) {
+    throw new Error('Insufficient funds');
+  }
+
+  await db.transaction(async trx => {
+    await updateAccountBalance(from_user_id, fromAccount.balance - amount);
+    await updateAccountBalance(to_user_id, toAccount.balance + amount);
+  });
+};

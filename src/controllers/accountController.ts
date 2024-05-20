@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { registerUser, fundAccount } from '../services/accountServices';
+import { registerUser, fundAccount, transferFunds } from '../services/accountServices';
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, email } = req.body;
@@ -14,3 +14,8 @@ export const addFunds = async (req: Request, res: Response) => {
   res.status(200).json({ message: 'Funds added', amount, user_id });
 };
 
+export const transfer = async (req: Request, res: Response) => {
+  const { from_user_id, to_user_id, amount } = req.body;
+  await transferFunds(from_user_id, to_user_id, amount);
+  res.status(200).json({ message: 'Funds transferred' });
+};
